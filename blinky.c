@@ -29,10 +29,18 @@
 #define LED_ON true
 #define LED_OFF false
 
+static XTtcPs ttcPs;
+
 void getLine (char *str);
 void callback(u32 led_num){
-	//pushes++;
 	led_toggle(led_num);
+}
+
+void TTC_callback(void *devicep){
+	//printf("Inside Handler\n\r");
+	XTtcPs *dev = (XTtcPs*)devicep;
+	led_toggle(4);
+	XTtcPs_ClearInterruptStatus(dev, XTTCPS_IXR_INTERVAL_MASK);
 }
 
 int main() {
@@ -43,6 +51,33 @@ int main() {
 		io_btn_init(callback);
 		io_sw_init(callback);
 	}
+
+	XTtcPs_Config * ConfigPtr;
+	ConfigPtr = XTtcPs_LookupConfig(XPAR_XTTCPS_0_DEVICE_ID);
+	u32 outcome = XTtcPs_CfgInitialize(&ttcPs, ConfigPtr, ConfigPtr->BaseAddress);
+	if (outcome == 0){
+		u32 freq = 1;
+		XInterval interval;
+		u8 prescaler;
+		printf("Before calcinterval\n\r");
+		XTtcPs_CalcIntervalFromFreq(&ttcPs, freq, &interval, &prescaler);
+		printf("After calcinterval\n\r");
+		XTtcPs_SetPrescaler(&ttcPs, prescaler);
+		XTtcPs_SetInterval(&ttcPs, interval);
+		s32 outcome1 = XTtcPs_SetOptions(&ttcPs, XTTCPS_OPTION_INTERVAL_MODE);
+		if (outcome1 == 0){
+			XTtcPs_DisableInterrupts(&ttcPs, XTTCPS_IXR_INTERVAL_MASK);
+			s32 outcome2 = gic_connect(XPAR_XTTCPS_0_INTR, TTC_callback, &ttcPs);
+			if (outcome2 == 0){
+				XTtcPs_EnableInterrupts(&ttcPs, XTTCPS_IXR_INTERVAL_MASK);
+				XTtcPs_Start(&ttcPs);
+			}
+
+		}
+
+	}
+
+
 
    int buff = 80;
    char str[buff];
@@ -112,6 +147,7 @@ int main() {
 
 	  io_btn_close();
 	  io_sw_close();
+	  XTtcPs_Stop(&ttcPs);
 	  gic_close();
 
    cleanup_platform();					/* cleanup the hardware platform */
