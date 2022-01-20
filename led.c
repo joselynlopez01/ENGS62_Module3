@@ -44,9 +44,7 @@ void led_init(void){
 	XGpioPs_SetOutputEnablePin(&portPs, 7, 1);
 
 	// Port 6
-	int answer = XGpio_Initialize(&port6, XPAR_AXI_GPIO_1_DEVICE_ID);	/* initialize device AXI_GPIO_0 */
-	/*printf("Status of LED6: %d\n\r", answer);
-	fflush(stdout);*/
+	XGpio_Initialize(&port6, XPAR_AXI_GPIO_1_DEVICE_ID);	/* initialize device AXI_GPIO_0 */
 	XGpio_SetDataDirection(&port6, CHANNEL1, OUTPUT);	    /* set tristate buffer to output */
 }
 
@@ -72,6 +70,8 @@ void led_set(u32 led, bool tostate, u32 color){
 		} else {
 			new_value = 0x0;
 		}
+		XGpio_DiscreteWrite(&port, CHANNEL1, new_value);
+		return;
 	} else if(led == 0 ) {
 		op =  0x1;
 	} else if(led == 1) {

@@ -20,8 +20,9 @@
 #include "gic.h"		/* interrupt controller interface */
 #include "io.h"
 #include "xttcps.h"
+#include "ttc.h"
 
-
+#define ALL 0xFFFFFFFF
 #define OUTPUT 0x0							/* setting GPIO direction to output */
 #define CHANNEL1 1							/* channel 1 of the GPIO port */
 
@@ -29,55 +30,31 @@
 #define LED_ON true
 #define LED_OFF false
 
-static XTtcPs ttcPs;
+//static XTtcPs ttcPs;
 
 void getLine (char *str);
 void callback(u32 led_num){
 	led_toggle(led_num);
 }
 
-void TTC_callback(void *devicep){
-	//printf("Inside Handler\n\r");
-	XTtcPs *dev = (XTtcPs*)devicep;
+void ttc_callback(void){
 	led_toggle(4);
-	XTtcPs_ClearInterruptStatus(dev, XTTCPS_IXR_INTERVAL_MASK);
 }
 
+
 int main() {
+
 	led_init();
 	s32 answer = gic_init(); /* initialize the gic (c.f. gic.h) */
 
 	if (answer == 0){
 		io_btn_init(callback);
 		io_sw_init(callback);
-	}
-
-	XTtcPs_Config * ConfigPtr;
-	ConfigPtr = XTtcPs_LookupConfig(XPAR_XTTCPS_0_DEVICE_ID);
-	u32 outcome = XTtcPs_CfgInitialize(&ttcPs, ConfigPtr, ConfigPtr->BaseAddress);
-	if (outcome == 0){
 		u32 freq = 1;
-		XInterval interval;
-		u8 prescaler;
-		printf("Before calcinterval\n\r");
-		XTtcPs_CalcIntervalFromFreq(&ttcPs, freq, &interval, &prescaler);
-		printf("After calcinterval\n\r");
-		XTtcPs_SetPrescaler(&ttcPs, prescaler);
-		XTtcPs_SetInterval(&ttcPs, interval);
-		s32 outcome1 = XTtcPs_SetOptions(&ttcPs, XTTCPS_OPTION_INTERVAL_MODE);
-		if (outcome1 == 0){
-			XTtcPs_DisableInterrupts(&ttcPs, XTTCPS_IXR_INTERVAL_MASK);
-			s32 outcome2 = gic_connect(XPAR_XTTCPS_0_INTR, TTC_callback, &ttcPs);
-			if (outcome2 == 0){
-				XTtcPs_EnableInterrupts(&ttcPs, XTTCPS_IXR_INTERVAL_MASK);
-				XTtcPs_Start(&ttcPs);
-			}
-
-		}
-
+		ttc_init(freq, ttc_callback);
 	}
 
-
+	ttc_start();
 
    int buff = 80;
    char str[buff];
@@ -99,7 +76,6 @@ int main() {
 
 	 do {
 		 if (strcmp(str, "0") == 0 || strcmp(str, "1") == 0 || strcmp(str, "2") == 0 || strcmp(str, "3") == 0){
-			 //printf("[%s]\n\r", str);
 			 if (strcmp(str, "0") == 0){
 				 led_toggle(0);
 				 ans = led_get(0);
@@ -144,10 +120,12 @@ int main() {
 	 led_set(0, LED_OFF, 0);
 	 led_set(4, LED_OFF, 0);
 	 led_set(6, LED_OFF, 0);
+	 led_set(ALL, LED_OFF, 0);
 
 	  io_btn_close();
 	  io_sw_close();
-	  XTtcPs_Stop(&ttcPs);
+	  ttc_stop();
+	  ttc_close();
 	  gic_close();
 
    cleanup_platform();					/* cleanup the hardware platform */
