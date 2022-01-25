@@ -42,10 +42,14 @@ void servo_init(void){
  */
 void servo_set(double dutycycle){
 	resetValue_1 = (dutycycle/100)* resetValue_0; // Our goal is to find
-	// Timer 1
-	XTmrCtr_Stop(&TmrCtr, XTC_TIMER_1); // Stops the timer counter by disabling it
-	XTmrCtr_SetOptions(&TmrCtr, XTC_TIMER_1, TOTAL_OPTIONS);
+
+	XTmrCtr_Stop(&TmrCtr, XTC_TIMER_0);
+	XTmrCtr_Stop(&TmrCtr, XTC_TIMER_1);
+
+	XTmrCtr_SetResetValue(&TmrCtr, XTC_TIMER_0, resetValue_0);
 	XTmrCtr_SetResetValue(&TmrCtr, XTC_TIMER_1, resetValue_1);
+
+	XTmrCtr_Start(&TmrCtr, XTC_TIMER_0);
 	XTmrCtr_Start(&TmrCtr, XTC_TIMER_1);
 
 }

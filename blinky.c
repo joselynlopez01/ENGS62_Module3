@@ -85,7 +85,7 @@ int main() {
 	dutycyle = 7.5;
 
 	dutycyle = 5.0;
-//	servo_set(dutycyle);
+	servo_set(dutycyle);
 
 
    int buff = 80;
