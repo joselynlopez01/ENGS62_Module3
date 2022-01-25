@@ -46,7 +46,7 @@ void ttc_callback(void){
 
 
 int main() {
-
+	double dutycyle;
 	led_init();
 	s32 answer = gic_init(); /* initialize the gic (c.f. gic.h) */
 
@@ -81,8 +81,11 @@ int main() {
 //		XTmrCtr_Start(&TmrCtr, XTC_TIMER_1);
 //	}
 
-	servo_init();
-	servo_set(5.0);
+//	servo_init();
+	dutycyle = 7.5;
+
+	dutycyle = 5.0;
+//	servo_set(dutycyle);
 
 
    int buff = 80;
@@ -138,6 +141,18 @@ int main() {
 				 led_set(6, LED_OFF, 6);
 			 }
 		 }
+
+		 if (strcmp(str, "a") == 0 || strcmp(str, "s") == 0){
+			 if (strcmp(str, "a") == 0){
+				 dutycyle += 0.25;
+			 } else if (strcmp(str, "s") == 0){
+				 dutycyle -= 0.25;
+			 }
+			 printf("[%.2f]\n\r", dutycyle);
+			 fflush(stdout);
+			 //servo_set(dutycyle);
+		 }
+
 		 printf(">");
 		 fflush(stdout);
 		 getLine(str);
