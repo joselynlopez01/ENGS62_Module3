@@ -22,6 +22,7 @@
 #include "xttcps.h"
 #include "ttc.h"
 #include "xtmrctr.h"
+#include "servo.h"
 
 #define ALL 0xFFFFFFFF
 #define OUTPUT 0x0							/* setting GPIO direction to output */
@@ -30,9 +31,9 @@
 /* led states */
 #define LED_ON true
 #define LED_OFF false
-#define TOTAL_OPTIONS XTC_DOWN_COUNT_OPTION | XTC_EXT_COMPARE_OPTION | XTC_PWM_ENABLE_OPTION
-
-static XTmrCtr TmrCtr;
+//#define TOTAL_OPTIONS XTC_DOWN_COUNT_OPTION | XTC_EXT_COMPARE_OPTION | XTC_PWM_ENABLE_OPTION
+//
+//static XTmrCtr TmrCtr;
 
 void getLine (char *str);
 void callback(u32 led_num){
@@ -61,25 +62,27 @@ int main() {
 
 	// The start of Step 6
 
-	if (XTmrCtr_Initialize(&TmrCtr, XPAR_TMRCTR_0_DEVICE_ID) == XST_SUCCESS){ //Returns one of the three states
-		u32 resetValue_0= 1000000; // Our goal is to find
-		u32 resetValue_1= 75000; // Our goal is to find
+//	if (XTmrCtr_Initialize(&TmrCtr, XPAR_TMRCTR_0_DEVICE_ID) == XST_SUCCESS){ //Returns one of the three states
+//		u32 resetValue_0= 1000000; // Our goal is to find
+//		u32 resetValue_1= 75000; // Our goal is to find
+//
+//		// Timer 0
+//		XTmrCtr_Stop(&TmrCtr, XTC_TIMER_0); // Stops the timer counter by disabling it
+//		XTmrCtr_SetResetValue(&TmrCtr, XTC_TIMER_0, resetValue_0);
+//		XTmrCtr_SetOptions(&TmrCtr, XTC_TIMER_0, TOTAL_OPTIONS);
+//		XTmrCtr_Start(&TmrCtr, XTC_TIMER_0);
+//		// u32 curr_options = XTmrCtr_GetOptions(TmrCtr, TmrCtrNumber); // Get the options for the specified timer counter
+//		//  u32 get_options = XTmrCtr_GetValue(TmrCtr, TmrCtrNumber); // Get the options for the specified timer counter
+//
+//		// Timer 1
+//		XTmrCtr_Stop(&TmrCtr, XTC_TIMER_1); // Stops the timer counter by disabling it
+//		XTmrCtr_SetResetValue(&TmrCtr, XTC_TIMER_1, resetValue_1);
+//		XTmrCtr_SetOptions(&TmrCtr, XTC_TIMER_1, TOTAL_OPTIONS);
+//		XTmrCtr_Start(&TmrCtr, XTC_TIMER_1);
+//	}
 
-		// Timer 0
-		XTmrCtr_Stop(&TmrCtr, XTC_TIMER_0); // Stops the timer counter by disabling it
-		XTmrCtr_SetResetValue(&TmrCtr, XTC_TIMER_0, resetValue_0);
-		XTmrCtr_SetOptions(&TmrCtr, XTC_TIMER_0, TOTAL_OPTIONS);
-		XTmrCtr_Start(&TmrCtr, XTC_TIMER_0);
-		// u32 curr_options = XTmrCtr_GetOptions(TmrCtr, TmrCtrNumber); // Get the options for the specified timer counter
-		//  u32 get_options = XTmrCtr_GetValue(TmrCtr, TmrCtrNumber); // Get the options for the specified timer counter
-
-		// Timer 1
-		XTmrCtr_Stop(&TmrCtr, XTC_TIMER_1); // Stops the timer counter by disabling it
-		XTmrCtr_SetResetValue(&TmrCtr, XTC_TIMER_1, resetValue_1);
-		XTmrCtr_SetOptions(&TmrCtr, XTC_TIMER_1, TOTAL_OPTIONS);
-		XTmrCtr_Start(&TmrCtr, XTC_TIMER_1);
-	}
-
+	servo_init();
+	servo_set(5.0);
 
 
    int buff = 80;
@@ -148,8 +151,8 @@ int main() {
 	 led_set(6, LED_OFF, 0);
 	 led_set(ALL, LED_OFF, 0);
 
-	  XTmrCtr_Stop(&TmrCtr, XTC_TIMER_0);
-	  XTmrCtr_Stop(&TmrCtr, XTC_TIMER_1);
+//	  XTmrCtr_Stop(&TmrCtr, XTC_TIMER_0);
+//	  XTmrCtr_Stop(&TmrCtr, XTC_TIMER_1);
 	  io_btn_close();
 	  io_sw_close();
 	  ttc_stop();
