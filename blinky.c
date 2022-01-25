@@ -84,7 +84,7 @@ int main() {
 	servo_init();
 	dutycyle = 7.5;
 
-	dutycyle = 5.0;
+	dutycyle = 2.5;
 	servo_set(dutycyle);
 
 
@@ -150,7 +150,7 @@ int main() {
 			 }
 			 printf("[%.2f]\n\r", dutycyle);
 			 fflush(stdout);
-			 //servo_set(dutycyle);
+			 servo_set(dutycyle);
 		 }
 
 		 printf(">");
