@@ -81,7 +81,7 @@ int main() {
 //		XTmrCtr_Start(&TmrCtr, XTC_TIMER_1);
 //	}
 
-//	servo_init();
+	servo_init();
 	dutycyle = 7.5;
 
 	dutycyle = 5.0;
