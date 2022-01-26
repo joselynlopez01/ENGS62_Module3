@@ -31,9 +31,6 @@
 /* led states */
 #define LED_ON true
 #define LED_OFF false
-//#define TOTAL_OPTIONS XTC_DOWN_COUNT_OPTION | XTC_EXT_COMPARE_OPTION | XTC_PWM_ENABLE_OPTION
-//
-//static XTmrCtr TmrCtr;
 
 void getLine (char *str);
 void callback(u32 led_num){
@@ -46,7 +43,7 @@ void ttc_callback(void){
 
 
 int main() {
-	double dutycyle;
+	double dutycycle;
 	led_init();
 	s32 answer = gic_init(); /* initialize the gic (c.f. gic.h) */
 
@@ -59,33 +56,9 @@ int main() {
 
 	ttc_start();
 
-
-	// The start of Step 6
-
-//	if (XTmrCtr_Initialize(&TmrCtr, XPAR_TMRCTR_0_DEVICE_ID) == XST_SUCCESS){ //Returns one of the three states
-//		u32 resetValue_0= 1000000; // Our goal is to find
-//		u32 resetValue_1= 75000; // Our goal is to find
-//
-//		// Timer 0
-//		XTmrCtr_Stop(&TmrCtr, XTC_TIMER_0); // Stops the timer counter by disabling it
-//		XTmrCtr_SetResetValue(&TmrCtr, XTC_TIMER_0, resetValue_0);
-//		XTmrCtr_SetOptions(&TmrCtr, XTC_TIMER_0, TOTAL_OPTIONS);
-//		XTmrCtr_Start(&TmrCtr, XTC_TIMER_0);
-//		// u32 curr_options = XTmrCtr_GetOptions(TmrCtr, TmrCtrNumber); // Get the options for the specified timer counter
-//		//  u32 get_options = XTmrCtr_GetValue(TmrCtr, TmrCtrNumber); // Get the options for the specified timer counter
-//
-//		// Timer 1
-//		XTmrCtr_Stop(&TmrCtr, XTC_TIMER_1); // Stops the timer counter by disabling it
-//		XTmrCtr_SetResetValue(&TmrCtr, XTC_TIMER_1, resetValue_1);
-//		XTmrCtr_SetOptions(&TmrCtr, XTC_TIMER_1, TOTAL_OPTIONS);
-//		XTmrCtr_Start(&TmrCtr, XTC_TIMER_1);
-//	}
-
 	servo_init();
-	dutycyle = 7.5;
-
-	dutycyle = 2.5;
-	servo_set(dutycyle);
+	dutycycle = 6.5;
+	servo_set(dutycycle);
 
 
    int buff = 80;
@@ -144,13 +117,13 @@ int main() {
 
 		 if (strcmp(str, "a") == 0 || strcmp(str, "s") == 0){
 			 if (strcmp(str, "a") == 0){
-				 dutycyle += 0.25;
+				 dutycycle += 0.25;
 			 } else if (strcmp(str, "s") == 0){
-				 dutycyle -= 0.25;
+				 dutycycle -= 0.25;
 			 }
-			 printf("[%.2f]\n\r", dutycyle);
+			 printf("[%.2f]\n\r", dutycycle);
 			 fflush(stdout);
-			 servo_set(dutycyle);
+			 servo_set(dutycycle);
 		 }
 
 		 printf(">");
@@ -166,8 +139,6 @@ int main() {
 	 led_set(6, LED_OFF, 0);
 	 led_set(ALL, LED_OFF, 0);
 
-//	  XTmrCtr_Stop(&TmrCtr, XTC_TIMER_0);
-//	  XTmrCtr_Stop(&TmrCtr, XTC_TIMER_1);
 	  io_btn_close();
 	  io_sw_close();
 	  ttc_stop();
