@@ -41,15 +41,18 @@ void servo_init(void){
  * Set the dutycycle of the servo
  */
 void servo_set(double dutycycle){
-	resetValue_1 = (dutycycle/100)* resetValue_0; // Our goal is to find
 
-	XTmrCtr_Stop(&TmrCtr, XTC_TIMER_0);
-	XTmrCtr_Stop(&TmrCtr, XTC_TIMER_1);
+	if ((dutycycle <= 8.75) && (dutycycle >= 4.25)){
+		resetValue_1 = (dutycycle/100)* resetValue_0; // Our goal is to find
 
-	XTmrCtr_SetResetValue(&TmrCtr, XTC_TIMER_0, resetValue_0);
-	XTmrCtr_SetResetValue(&TmrCtr, XTC_TIMER_1, resetValue_1);
+		XTmrCtr_Stop(&TmrCtr, XTC_TIMER_0);
+		XTmrCtr_Stop(&TmrCtr, XTC_TIMER_1);
 
-	XTmrCtr_Start(&TmrCtr, XTC_TIMER_0);
-	XTmrCtr_Start(&TmrCtr, XTC_TIMER_1);
+		XTmrCtr_SetResetValue(&TmrCtr, XTC_TIMER_0, resetValue_0);
+		XTmrCtr_SetResetValue(&TmrCtr, XTC_TIMER_1, resetValue_1);
+
+		XTmrCtr_Start(&TmrCtr, XTC_TIMER_0);
+		XTmrCtr_Start(&TmrCtr, XTC_TIMER_1);
+	}
 
 }

@@ -32,6 +32,9 @@
 #define LED_ON true
 #define LED_OFF false
 
+#define LOW 4.25
+#define HIGH 8.75
+
 void getLine (char *str);
 void callback(u32 led_num){
 	led_toggle(led_num);
@@ -116,14 +119,30 @@ int main() {
 		 }
 
 		 if (strcmp(str, "a") == 0 || strcmp(str, "s") == 0){
-			 if (strcmp(str, "a") == 0){
+			 if ((strcmp(str, "a") == 0) && ((dutycycle + 0.25) <= 8.75)){
 				 dutycycle += 0.25;
-			 } else if (strcmp(str, "s") == 0){
+			 } else if ((strcmp(str, "s") == 0) && ((dutycycle - 0.25) >= 4.25)){
 				 dutycycle -= 0.25;
 			 }
 			 printf("[%.2f]\n\r", dutycycle);
 			 fflush(stdout);
 			 servo_set(dutycycle);
+		 }
+
+		 if (strcmp(str, "low") == 0){
+			 dutycycle =  LOW;
+			 servo_set(dutycycle);
+			 printf("[%.2f]\n\r", dutycycle);
+			 fflush(stdout);
+
+		 }
+
+		 if (strcmp(str, "high") == 0){
+			 dutycycle =  HIGH;
+			 printf("[%.2f]\n\r", dutycycle);
+			 fflush(stdout);
+			 servo_set(dutycycle);
+
 		 }
 
 		 printf(">");
