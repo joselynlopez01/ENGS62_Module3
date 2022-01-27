@@ -119,9 +119,9 @@ int main() {
 		 }
 
 		 if (strcmp(str, "a") == 0 || strcmp(str, "s") == 0){
-			 if ((strcmp(str, "a") == 0) && ((dutycycle + 0.25) <= 8.75)){
+			 if ((strcmp(str, "a") == 0) && ((dutycycle + 0.25) <= HIGH)){
 				 dutycycle += 0.25;
-			 } else if ((strcmp(str, "s") == 0) && ((dutycycle - 0.25) >= 4.25)){
+			 } else if ((strcmp(str, "s") == 0) && ((dutycycle - 0.25) >= LOW)){
 				 dutycycle -= 0.25;
 			 }
 			 printf("[%.2f]\n\r", dutycycle);
